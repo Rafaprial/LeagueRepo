@@ -55,7 +55,10 @@ def createProtonMailAccount(email, password):
     pyautogui.write(getNonUsedEmail()+"@proton.me")
     pyautogui.press('enter')
     driver.get("https://account.proton.me/login?product=generic&language=en")
-    driver.find_element_by_tag_name('body').send_keys(Keys.COMMAND + 't') 
+    driver.execute_script("window.open('about:blank','secondtab')")
+    # It is switching to second tab now
+    driver.switch_to.window("secondtab")
+    # In the second tab, it opens geeksforgeeks
     driver.get("https://account.proton.me/login")
 
     # emailInput = driver.find_element(By.ID, "email")
