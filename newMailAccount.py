@@ -52,15 +52,20 @@ def createProtonMailAccount(email, password):
     time.sleep(3)
     emailCaptcha = driver.find_element(By.ID, "label_1")
     emailCaptcha.click()
-    pyautogui.write(getNonUsedEmail()+"@proton.me")
+    pyautogui.write(getNonUsedEmail()[0]+"@proton.me")
     pyautogui.press('enter')
     driver.get("https://account.proton.me/login?product=generic&language=en")
     driver.execute_script("window.open('about:blank','secondtab')")
     # It is switching to second tab now
     driver.switch_to.window("secondtab")
+    time.sleep(1)
     # In the second tab, it opens geeksforgeeks
     driver.get("https://account.proton.me/login")
-
+    time.sleep(2)
+    pyautogui.write(getNonUsedEmail()[0]+"@proton.me")
+    passwordWrite = driver.find_element(By.ID, "password")
+    passwordWrite.click()
+    pyautogui.write(getNonUsedEmail()[1])
     # emailInput = driver.find_element(By.ID, "email")
     # emailInput.send_keys(email)
     # passwordInput = driver.find_element(By.ID, "password")
@@ -74,7 +79,7 @@ def getNonUsedEmail():
     listOfEmails = listFile()
     if listOfEmails is not None:
         value = listOfEmails[-1].split("|")
-        return(value[0])
+        return(value[0],value[1])
 
     else:
         print("Error")
