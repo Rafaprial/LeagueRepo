@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Grid</title>
+</head>
+<body>
+    <canvas id="grid" width="{{ grid_size }}" height="{{ grid_size }}"></canvas>
+
+    <script>
+        var canvas = document.getElementById('grid');
+        var ctx = canvas.getContext('2d');
+        var square_size = {{ square_size }};
+        var colors = {{ colors|tojson }};
+        var square_id = null;
+
+        // Draw the grid
+        for (var i = 0; i < canvas.width; i += square_size) {
+            for (var j = 0; j < canvas.height; j += square_size) {
+                var color = colors[i + '_' + j];
+                ctx.fillStyle = color;
+                ctx.fillRect(i, j, square_size, square_size);
+            }
+        }
+
+        // Handle mouse clicks
+        canvas.addEventListener('mousedown', function(event) {
+            var x = event.offsetX;
+            var y = event.offsetY;
+            var i = Math.floor(x / square_size) * square_size;
+            var j = Math.floor(y / square_size) * square_size;
+            square_id = i + '_' + j;
+        });
+
+        // Handle color changes
+        canvas.addEventListener('mouseup', function(event) {
+            if (square_id) {
+                var new_color = prompt('Choose a color:', colors[square_id]);
+                if (new_color) {
+                    colors[square_id] = new_color;
+                    ctx.fillStyle = new_color;
+                    ctx.fillRect(Math.floor(square_id / square_size) * square_size,
+                                 square_id % square_size,
+                                 square_size,
+                                 square_size);
+            fetch('/change_color', {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        'square_id': square_id,
+                        'new_color': new_color
+                    })
+                });
+            }
+            square_id = null;
+        }
+    });
+</script>
+</body>
+</html>
